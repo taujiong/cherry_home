@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../modules/counter/pages/counter.dart';
-import '../modules/days-matter/pages/list.dart';
+import '../modules/matters_day/pages/list.dart';
 
 class ModuleMeta {
   final String id;
@@ -20,12 +20,12 @@ class ModuleMeta {
 }
 
 List<ModuleMeta> moduleMetas = [
-  const ModuleMeta(
-    id: 'days-matter',
+  ModuleMeta(
+    id: 'matters_day',
     name: '倒数日',
     category: '生活',
     description: '倒数日，可以是一项预定的规划，也可以是一份美好的期待',
-    entryPage: DaysMatterListPage(),
+    entryPage: MattersDayListPage(),
   ),
   const ModuleMeta(
     id: 'counter',
