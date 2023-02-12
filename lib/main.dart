@@ -1,7 +1,6 @@
-import 'package:cherry_home/home.dart';
-import 'package:cherry_home/modules/counter/entry.dart';
-import 'package:cherry_home/modules/days-matter/entry.dart';
 import 'package:flutter/material.dart';
+
+import './home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,14 +13,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: '樱桃屋',
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
+      theme: ThemeData.light(useMaterial3: true),
+      darkTheme: ThemeData.dark(useMaterial3: true),
       themeMode: ThemeMode.system,
       home: const HomePage(),
-      routes: {
-        DaysMatterPage.routeName: (context) => const DaysMatterPage(),
-        CounterPage.routeName: (context) => const CounterPage(),
-      },
     );
   }
 }
