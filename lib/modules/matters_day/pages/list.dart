@@ -1,8 +1,7 @@
-import 'package:cherry_home/modules/matters_day/models/matters_day_repo.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/matters_day.dart';
+import '../models/matters_day_repo.dart';
 
 class MattersDayListPage extends StatelessWidget {
   const MattersDayListPage({super.key});
@@ -79,20 +78,27 @@ class MattersDayListPage extends StatelessWidget {
         elevation: 2,
         scrolledUnderElevation: 4,
       ),
-      body: Consumer(builder: (_, WidgetRef ref, __) {
-        final days = ref.watch(mattersDaysProvider);
-        return days.when(
-          data: (days) => ListView(
-            padding: const EdgeInsets.only(top: 4),
-            children: days
-                .where((day) => !day.isExpired)
-                .map((day) => _buildDayItem(context, day))
-                .toList(),
-          ),
-          error: (error, _) => Text(error.toString()),
-          loading: () => const Center(child: CircularProgressIndicator()),
-        );
-      }),
+      body: FutureBuilder(
+          future: mattersDayRepo.fetchDays(),
+          builder: ((context, snapshot) {
+            if (snapshot.hasData) {
+              return ListView(
+                padding: const EdgeInsets.only(top: 4),
+                children: snapshot.data!
+                    .where((day) => !day.isExpired)
+                    .map((day) => _buildDayItem(context, day))
+                    .toList(),
+              );
+            }
+
+            if (snapshot.hasError) {
+              return Text(snapshot.error.toString());
+            }
+
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          })),
     );
   }
 }

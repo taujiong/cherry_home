@@ -1,7 +1,7 @@
-import 'package:cherry_home/modules/matters_day/models/matters_day.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+
+import './matters_day.dart';
 
 class MattersDayRepo {
   static const tableName = 'matters_day';
@@ -74,9 +74,4 @@ class MattersDayRepo {
   }
 }
 
-final mattersDayRepoProvider = Provider((ref) => MattersDayRepo());
-
-final mattersDaysProvider = FutureProvider.autoDispose((ref) {
-  final repoProvider = ref.watch(mattersDayRepoProvider);
-  return repoProvider.fetchDays();
-});
+final mattersDayRepo = MattersDayRepo();
