@@ -20,7 +20,7 @@ class ModuleMeta {
 }
 
 List<ModuleMeta> moduleMetas = [
-  ModuleMeta(
+  const ModuleMeta(
     id: 'matters_day',
     name: '倒数日',
     category: '生活',
