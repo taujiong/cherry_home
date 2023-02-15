@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class MattersDayAddPage extends StatefulWidget {
-  const MattersDayAddPage({super.key});
+  final MattersDay? toBeUpdateDay;
+  const MattersDayAddPage({super.key, this.toBeUpdateDay});
 
   @override
   State<MattersDayAddPage> createState() => _MattersDayAddPageState();
@@ -16,6 +17,19 @@ class _MattersDayAddPageState extends State<MattersDayAddPage> {
   final _dateFormat = DateFormat('yyyy-MM-dd');
   var _targetDate = DateTime.now();
   late final TextEditingController _targetDateController;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.toBeUpdateDay != null) {
+      setState(() {
+        _targetDate = widget.toBeUpdateDay!.targetDate;
+      });
+    }
+    _descriptionController.text = widget.toBeUpdateDay!.description;
+    _targetDateController =
+        TextEditingController(text: _dateFormat.format(_targetDate));
+  }
 
   void _saveDay() {
     if (!_formKey.currentState!.validate()) return;
@@ -40,13 +54,6 @@ class _MattersDayAddPageState extends State<MattersDayAddPage> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _targetDateController =
-        TextEditingController(text: _dateFormat.format(_targetDate));
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -57,7 +64,10 @@ class _MattersDayAddPageState extends State<MattersDayAddPage> {
           if (_descriptionController.text.isNotEmpty)
             TextButton(
               onPressed: _saveDay,
-              child: const Text('保存'),
+              child: Text(
+                '保存',
+                style: Theme.of(context).textTheme.bodyLarge!,
+              ),
             ),
         ],
       ),
@@ -97,7 +107,14 @@ class _MattersDayAddPageState extends State<MattersDayAddPage> {
                   showCursor: false,
                 ),
               ),
-              FilledButton(onPressed: _saveDay, child: const Text('保存'))
+              Container(
+                padding: const EdgeInsets.only(top: 12),
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: _saveDay,
+                  child: const Text('保存'),
+                ),
+              )
             ],
           ),
         ),
