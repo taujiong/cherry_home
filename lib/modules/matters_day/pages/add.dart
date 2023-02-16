@@ -1,8 +1,8 @@
+import 'package:cherry_home/modules/matters_day/services/matters_day_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../models/matters_day.dart';
-import '../repos/matters_day_repo.dart';
 
 class MattersDayAddPage extends StatefulWidget {
   final MattersDay? toBeUpdateDay;
@@ -13,7 +13,6 @@ class MattersDayAddPage extends StatefulWidget {
 }
 
 class _MattersDayAddPageState extends State<MattersDayAddPage> {
-  final mattersDayRepo = MattersDayRepo();
   final _formKey = GlobalKey<FormState>();
   final _descriptionController = TextEditingController(text: '');
   final _dateFormat = DateFormat('yyyy-MM-dd');
@@ -33,6 +32,13 @@ class _MattersDayAddPageState extends State<MattersDayAddPage> {
         TextEditingController(text: _dateFormat.format(_targetDate));
   }
 
+  @override
+  void dispose() {
+    _descriptionController.dispose();
+    _targetDateController.dispose();
+    super.dispose();
+  }
+
   void _saveDay() {
     if (!_formKey.currentState!.validate()) return;
     final day = MattersDayCreateOrUpdateDto(
@@ -41,9 +47,9 @@ class _MattersDayAddPageState extends State<MattersDayAddPage> {
     );
 
     if (widget.toBeUpdateDay == null) {
-      mattersDayRepo.insertDay(day).then((value) => Navigator.pop(context));
+      mattersDayService.insertDay(day).then((value) => Navigator.pop(context));
     } else {
-      mattersDayRepo
+      mattersDayService
           .updateDay(widget.toBeUpdateDay!.id, day)
           .then((value) => Navigator.pop(context));
     }
