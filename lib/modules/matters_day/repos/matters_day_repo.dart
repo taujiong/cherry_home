@@ -1,7 +1,7 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import './matters_day.dart';
+import '../models/matters_day.dart';
 
 class MattersDayRepo {
   static const tableName = 'matters_day';
@@ -49,18 +49,18 @@ class MattersDayRepo {
     return items.map((item) => MattersDay.fromMap(item)).toList();
   }
 
-  Future<void> insertDay(MattersDay day) async {
+  Future<void> insertDay(MattersDayCreateOrUpdateDto day) async {
     final db = await database;
     await db.insert(tableName, day.toMap());
   }
 
-  Future<void> updateDay(MattersDay day) async {
+  Future<void> updateDay(int id, MattersDayCreateOrUpdateDto day) async {
     final db = await database;
     await db.update(
       tableName,
       day.toMap(),
       where: 'id = ?',
-      whereArgs: [day.id],
+      whereArgs: [id],
     );
   }
 
@@ -73,5 +73,3 @@ class MattersDayRepo {
     );
   }
 }
-
-final mattersDayRepo = MattersDayRepo();

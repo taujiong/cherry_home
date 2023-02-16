@@ -1,9 +1,9 @@
-import 'package:cherry_home/modules/matters_day/pages/add.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../models/matters_day.dart';
-import '../models/matters_day_repo.dart';
+import '../repos/matters_day_repo.dart';
+import 'add.dart';
 
 class MattersDayListPage extends StatefulWidget {
   const MattersDayListPage({super.key});
@@ -13,11 +13,14 @@ class MattersDayListPage extends StatefulWidget {
 }
 
 class _MattersDayListPageState extends State<MattersDayListPage> {
+  final mattersDayRepo = MattersDayRepo();
+
   Widget _buildDayItem(BuildContext context, MattersDay day) {
     return CupertinoContextMenu(
       actions: [
         CupertinoContextMenuAction(
           onPressed: () {
+            Navigator.of(context).pop();
             Navigator.of(context)
                 .push(MaterialPageRoute(
                   builder: (context) => MattersDayAddPage(

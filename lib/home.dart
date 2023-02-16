@@ -35,10 +35,11 @@ class HomePage extends StatelessWidget {
         elevation: 2,
         scrolledUnderElevation: 4,
       ),
-      body: ListView(
+      body: ListView.builder(
         padding: const EdgeInsets.only(top: 4),
-        children:
-            moduleMetas.map((meta) => _buildModuleCard(context, meta)).toList(),
+        itemCount: moduleMetas.length,
+        itemBuilder: (context, index) =>
+            _buildModuleCard(context, moduleMetas[index]),
       ),
     );
   }

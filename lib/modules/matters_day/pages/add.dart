@@ -1,7 +1,8 @@
-import 'package:cherry_home/modules/matters_day/models/matters_day.dart';
-import 'package:cherry_home/modules/matters_day/models/matters_day_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import '../models/matters_day.dart';
+import '../repos/matters_day_repo.dart';
 
 class MattersDayAddPage extends StatefulWidget {
   final MattersDay? toBeUpdateDay;
@@ -12,6 +13,7 @@ class MattersDayAddPage extends StatefulWidget {
 }
 
 class _MattersDayAddPageState extends State<MattersDayAddPage> {
+  final mattersDayRepo = MattersDayRepo();
   final _formKey = GlobalKey<FormState>();
   final _descriptionController = TextEditingController(text: '');
   final _dateFormat = DateFormat('yyyy-MM-dd');
@@ -25,16 +27,26 @@ class _MattersDayAddPageState extends State<MattersDayAddPage> {
       setState(() {
         _targetDate = widget.toBeUpdateDay!.targetDate;
       });
+      _descriptionController.text = widget.toBeUpdateDay!.description;
     }
-    _descriptionController.text = widget.toBeUpdateDay!.description;
     _targetDateController =
         TextEditingController(text: _dateFormat.format(_targetDate));
   }
 
   void _saveDay() {
     if (!_formKey.currentState!.validate()) return;
-    final day = MattersDay.fromDto(_descriptionController.text, _targetDate);
-    mattersDayRepo.insertDay(day).then((value) => Navigator.pop(context));
+    final day = MattersDayCreateOrUpdateDto(
+      description: _descriptionController.text,
+      targetDate: _targetDate,
+    );
+
+    if (widget.toBeUpdateDay == null) {
+      mattersDayRepo.insertDay(day).then((value) => Navigator.pop(context));
+    } else {
+      mattersDayRepo
+          .updateDay(widget.toBeUpdateDay!.id, day)
+          .then((value) => Navigator.pop(context));
+    }
   }
 
   void _onDateFieldTapped() async {
