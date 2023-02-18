@@ -1,12 +1,13 @@
-import 'package:cherry_home/modules/matters_day/services/matters_day_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../models/matters_day.dart';
 
 class MattersDayAddPage extends StatefulWidget {
-  final MattersDay? toBeUpdateDay;
-  const MattersDayAddPage({super.key, this.toBeUpdateDay});
+  final DocumentReference<MattersDay>? dayRef;
+
+  const MattersDayAddPage({super.key, this.dayRef});
 
   @override
   State<MattersDayAddPage> createState() => _MattersDayAddPageState();
@@ -14,61 +15,52 @@ class MattersDayAddPage extends StatefulWidget {
 
 class _MattersDayAddPageState extends State<MattersDayAddPage> {
   final _formKey = GlobalKey<FormState>();
-  final _descriptionController = TextEditingController(text: '');
   final _dateFormat = DateFormat('yyyy-MM-dd');
-  var _targetDate = DateTime.now();
-  late final TextEditingController _targetDateController;
+  final _description = TextEditingController(text: '');
+  final _targetDate = TextEditingController(text: '');
+  late final DocumentReference<MattersDay> _dayRef;
+  MattersDay _day = MattersDay(description: '', targetDate: DateTime.now());
 
   @override
   void initState() {
     super.initState();
-    if (widget.toBeUpdateDay != null) {
+    _description.addListener(() => setState(() {}));
+    _dayRef = widget.dayRef ?? MattersDay.collectionRef.doc();
+    _dayRef.get().then((daySnapshot) {
+      final dayFromSnapshot = daySnapshot.data();
+      if (dayFromSnapshot != null) _day = dayFromSnapshot;
       setState(() {
-        _targetDate = widget.toBeUpdateDay!.targetDate;
+        _description.text = _day.description;
+        _targetDate.text = _dateFormat.format(_day.targetDate);
       });
-      _descriptionController.text = widget.toBeUpdateDay!.description;
-    }
-    _targetDateController =
-        TextEditingController(text: _dateFormat.format(_targetDate));
+    });
   }
 
   @override
   void dispose() {
-    _descriptionController.dispose();
-    _targetDateController.dispose();
+    _description.dispose();
+    _targetDate.dispose();
     super.dispose();
   }
 
   void _saveDay() {
     if (!_formKey.currentState!.validate()) return;
-    final day = MattersDayCreateOrUpdateDto(
-      description: _descriptionController.text,
-      targetDate: _targetDate,
-    );
-
-    if (widget.toBeUpdateDay == null) {
-      mattersDayService.insertDay(day).then((value) => Navigator.pop(context));
-    } else {
-      mattersDayService
-          .updateDay(widget.toBeUpdateDay!.id, day)
-          .then((value) => Navigator.pop(context));
-    }
+    _day.description = _description.text;
+    _dayRef.set(_day).then((value) => Navigator.of(context).pop());
   }
 
   void _onDateFieldTapped() async {
     final date = await showDatePicker(
       context: context,
-      initialDate: _targetDate,
+      initialDate: _day.targetDate,
       firstDate: DateTime(1970),
-      lastDate: DateTime(2100),
+      lastDate: _day.targetDate.add(const Duration(days: 36500)),
     );
 
     if (date == null) return;
 
-    _targetDateController.text = _dateFormat.format(date);
-    setState(() {
-      _targetDate = date;
-    });
+    _targetDate.text = _dateFormat.format(date);
+    _day.targetDate = date;
   }
 
   @override
@@ -79,7 +71,7 @@ class _MattersDayAddPageState extends State<MattersDayAddPage> {
         elevation: 2,
         scrolledUnderElevation: 4,
         actions: [
-          if (_descriptionController.text.isNotEmpty)
+          if (_description.text.isNotEmpty)
             TextButton(
               onPressed: _saveDay,
               child: Text(
@@ -95,35 +87,31 @@ class _MattersDayAddPageState extends State<MattersDayAddPage> {
           key: _formKey,
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: TextFormField(
-                  controller: _descriptionController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) return '请输入描述';
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.feed_outlined),
-                    labelText: '描述',
-                    hintText: '点击这里输入事件描述',
-                    helperText: '',
-                    border: OutlineInputBorder(),
-                  ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _description,
+                validator: (value) {
+                  if (value == null || value.isEmpty) return '请输入描述';
+                  return null;
+                },
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.feed_outlined),
+                  labelText: '描述',
+                  hintText: '点击这里输入事件描述',
+                  helperText: '',
+                  border: OutlineInputBorder(),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: TextFormField(
-                  controller: _targetDateController,
-                  onTap: () => _onDateFieldTapped(),
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.calendar_month_outlined),
-                    labelText: '目标日',
-                    border: OutlineInputBorder(),
-                  ),
-                  showCursor: false,
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _targetDate,
+                onTap: () => _onDateFieldTapped(),
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.calendar_month_outlined),
+                  labelText: '目标日',
+                  border: OutlineInputBorder(),
                 ),
+                showCursor: false,
               ),
               Container(
                 padding: const EdgeInsets.only(top: 12),

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import './models/module_meta.dart';
+import 'models/module_meta.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   Widget _buildModuleCard(BuildContext context, ModuleMeta meta) {
     return GestureDetector(
-      key: Key(meta.id),
+      key: ValueKey(meta.id),
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => meta.entryPage),
       ),

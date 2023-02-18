@@ -1,34 +1,32 @@
-class MattersDay extends MattersDayCreateOrUpdateDto {
-  final int id;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-  const MattersDay({
-    required this.id,
-    required super.description,
-    required super.targetDate,
+class MattersDay {
+  static final collectionRef =
+      FirebaseFirestore.instance.collection('matters_day').withConverter(
+            fromFirestore: (snapshot, options) =>
+                MattersDay.fromJson(snapshot.data()!),
+            toFirestore: (day, options) => day.toJson(),
+          );
+
+  String description;
+  DateTime targetDate;
+
+  MattersDay({
+    required this.description,
+    required this.targetDate,
   });
 
   bool get isExpired => DateTime.now().isAfter(targetDate);
 
   int get leftDaysFromNow => targetDate.difference(DateTime.now()).inDays;
 
-  factory MattersDay.fromMap(Map<String, dynamic> map) => MattersDay(
-        id: map['id'],
+  factory MattersDay.fromJson(Map<String, dynamic> map) => MattersDay(
         description: map['description'],
-        targetDate: DateTime.parse(map['targetDate']),
+        targetDate: (map['targetDate'] as Timestamp).toDate(),
       );
-}
 
-class MattersDayCreateOrUpdateDto {
-  final String description;
-  final DateTime targetDate;
-
-  const MattersDayCreateOrUpdateDto({
-    required this.description,
-    required this.targetDate,
-  });
-
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> toJson() => {
         'description': description,
-        'targetDate': targetDate.toString(),
+        'targetDate': targetDate,
       };
 }
