@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/matters_day.dart';
 import '../widgets/matters_day_item.dart';
-import 'add.dart';
+import 'modify.dart';
 
 class MattersDayListPage extends StatelessWidget {
   final _dayCollectionRef = MattersDay.collectionRef;
@@ -21,7 +21,7 @@ class MattersDayListPage extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => const MattersDayAddPage(),
+                  builder: (context) => const MattersDayModifyPage(),
                 ),
               );
             },

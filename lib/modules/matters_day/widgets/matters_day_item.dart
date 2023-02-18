@@ -1,9 +1,11 @@
+import 'package:cherry_home/modules/matters_day/pages/detail.dart';
+import 'package:cherry_home/modules/matters_day/widgets/matters_day_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../models/matters_day.dart';
-import '../pages/add.dart';
+import '../pages/modify.dart';
 
 class MattersDayItem extends StatelessWidget {
   final QueryDocumentSnapshot<MattersDay> daySnapshot;
@@ -44,7 +46,7 @@ class MattersDayItem extends StatelessWidget {
             Navigator.of(context).pop();
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => MattersDayAddPage(
+                builder: (context) => MattersDayModifyPage(
                   dayRef: daySnapshot.reference,
                 ),
               ),
@@ -65,17 +67,17 @@ class MattersDayItem extends StatelessWidget {
       ],
       // ignore: deprecated_member_use
       previewBuilder: (context, animation, child) {
-        return Container(
-          width: 500,
-          height: 500,
-          color: Colors.teal,
-          child: Center(
-            child: Text(day.description),
-          ),
+        return SingleChildScrollView(
+          child: MattersDayCard(height: 280, day: day),
         );
       },
       child: GestureDetector(
-        // onTap: ,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) =>
+                MattersDayDatailPage(daySnapshot: daySnapshot),
+          ),
+        ),
         child: Card(
           child: Container(
             height: 36,
@@ -113,8 +115,8 @@ class MattersDayItem extends StatelessWidget {
                       width: 32,
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(8),
-                          bottomRight: Radius.circular(8),
+                          topRight: Radius.circular(12),
+                          bottomRight: Radius.circular(12),
                         ),
                         color: Colors.orange[700],
                       ),

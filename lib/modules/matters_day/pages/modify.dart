@@ -4,16 +4,16 @@ import 'package:intl/intl.dart';
 
 import '../models/matters_day.dart';
 
-class MattersDayAddPage extends StatefulWidget {
+class MattersDayModifyPage extends StatefulWidget {
   final DocumentReference<MattersDay>? dayRef;
 
-  const MattersDayAddPage({super.key, this.dayRef});
+  const MattersDayModifyPage({super.key, this.dayRef});
 
   @override
-  State<MattersDayAddPage> createState() => _MattersDayAddPageState();
+  State<MattersDayModifyPage> createState() => _MattersDayModifyPageState();
 }
 
-class _MattersDayAddPageState extends State<MattersDayAddPage> {
+class _MattersDayModifyPageState extends State<MattersDayModifyPage> {
   final _formKey = GlobalKey<FormState>();
   final _dateFormat = DateFormat('yyyy-MM-dd');
   final _description = TextEditingController(text: '');
