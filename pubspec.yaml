@@ -17,6 +17,8 @@ dependencies:
   cloud_firestore: ^4.4.2
   image_picker: ^0.8.6+2
   palette_generator: ^0.3.3+2
+  path_provider: ^2.0.12
+  path: ^1.8.2
 
 dev_dependencies:
   flutter_test:

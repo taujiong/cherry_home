@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MattersDay {
+  static const groupName = 'matters_day';
+  static const backgroundImageDir = 'background_image';
+
   static final collectionRef =
-      FirebaseFirestore.instance.collection('matters_day').withConverter(
+      FirebaseFirestore.instance.collection(groupName).withConverter(
             fromFirestore: (snapshot, options) =>
                 MattersDay.fromJson(snapshot.data()!),
             toFirestore: (day, options) => day.toJson(),

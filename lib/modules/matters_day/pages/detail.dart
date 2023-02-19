@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:palette_generator/palette_generator.dart';
 
 import '../../../utils/context.dart';
+import '../../../utils/image.dart';
+import '../../../utils/io.dart';
 import '../models/matters_day.dart';
 import '../widgets/matters_day_card.dart';
 import 'modify.dart';
@@ -28,6 +29,7 @@ class _MattersDayDatailPageState extends State<MattersDayDatailPage> {
   void initState() {
     super.initState();
     _day = widget.daySnapshot.data();
+    _loadLocalImage();
   }
 
   void _editDay() async {
@@ -41,21 +43,46 @@ class _MattersDayDatailPageState extends State<MattersDayDatailPage> {
     });
   }
 
-  void _setBackground() async {
-    final imageFile = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
+  void _loadLocalImage() async {
+    final savePath = await getLocalFilePath(
+      MattersDay.groupName,
+      MattersDay.backgroundImageDir,
+      widget.daySnapshot.id,
     );
-    if (imageFile == null) return;
+    final localImage = File(savePath);
+    final exist = await localImage.exists();
+    if (!exist) return;
+    _updateImage(localImage);
+  }
 
-    final image = Image.file(File(imageFile.path)).image;
-    final palette = await PaletteGenerator.fromImageProvider(image);
-    final mainColor = palette.dominantColor ?? palette.paletteColors[0];
-    final brightness = ThemeData.estimateBrightnessForColor(mainColor.color);
+  void _updateImage(File loadedImage) async {
+    final image = Image.file(loadedImage).image;
+    final textColor = await getTextColorOnImage(image);
 
     setState(() {
       _image = image;
-      _textColor = brightness == Brightness.dark ? Colors.white : Colors.black;
+      _textColor = textColor;
     });
+  }
+
+  void _setBackground() async {
+    final pickedImage = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+    );
+    if (pickedImage == null) return;
+
+    final savePath = await getLocalFilePath(
+      MattersDay.groupName,
+      MattersDay.backgroundImageDir,
+      widget.daySnapshot.id,
+    );
+    final savedFile = File(savePath);
+    final exist = await savedFile.exists();
+    if (!exist) {
+      await savedFile.create(recursive: true);
+    }
+    await pickedImage.saveTo(savePath);
+    _updateImage(File(savePath));
   }
 
   @override
