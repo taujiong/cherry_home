@@ -1,19 +1,52 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../models/matters_day.dart';
 import '../widgets/matters_day_card.dart';
 import 'modify.dart';
 
-class MattersDayDatailPage extends StatelessWidget {
+class MattersDayDatailPage extends StatefulWidget {
   final QueryDocumentSnapshot<MattersDay> daySnapshot;
 
   const MattersDayDatailPage({super.key, required this.daySnapshot});
 
   @override
-  Widget build(BuildContext context) {
-    final day = daySnapshot.data();
+  State<MattersDayDatailPage> createState() => _MattersDayDatailPageState();
+}
 
+class _MattersDayDatailPageState extends State<MattersDayDatailPage> {
+  late MattersDay _day;
+
+  @override
+  void initState() {
+    super.initState();
+    _day = widget.daySnapshot.data();
+  }
+
+  void _editDay() async {
+    final updatedDay = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) =>
+            MattersDayModifyPage(dayRef: widget.daySnapshot.reference),
+      ),
+    );
+    if (updatedDay == null) return;
+    setState(() {
+      _day = updatedDay;
+    });
+  }
+
+  void _setBackground() async {
+    final imageFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+    );
+    if (imageFile == null) return;
+    print(imageFile.path);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('倒数日'),
@@ -21,12 +54,7 @@ class MattersDayDatailPage extends StatelessWidget {
         scrolledUnderElevation: 4,
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) =>
-                    MattersDayModifyPage(dayRef: daySnapshot.reference),
-              ),
-            ),
+            onPressed: _editDay,
             child: Text(
               '编辑',
               style: Theme.of(context).textTheme.bodyLarge!,
@@ -46,13 +74,13 @@ class MattersDayDatailPage extends StatelessWidget {
             ),
             child: Column(
               children: [
-                MattersDayCard(height: maxHeight * 0.36, day: day),
+                MattersDayCard(height: maxHeight * 0.36, day: _day),
                 const SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     FilledButton.icon(
-                      onPressed: () {},
+                      onPressed: _setBackground,
                       icon: const Icon(Icons.image),
                       label: const Text('设置背景'),
                     ),

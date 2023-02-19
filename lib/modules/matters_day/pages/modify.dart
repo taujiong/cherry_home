@@ -56,9 +56,7 @@ class _MattersDayModifyPageState extends State<MattersDayModifyPage> {
       firstDate: DateTime(1970),
       lastDate: _day.targetDate.add(const Duration(days: 36500)),
     );
-
     if (date == null) return;
-
     _targetDate.text = _dateFormat.format(date);
     _day.targetDate = date;
   }
