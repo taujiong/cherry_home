@@ -71,6 +71,7 @@ class _MattersDayDatailPageState extends State<MattersDayDatailPage> {
     );
     if (pickedImage == null) return;
 
+    _updateImage(File(pickedImage.path));
     final savePath = await getLocalFilePath(
       MattersDay.groupName,
       MattersDay.backgroundImageDir,
@@ -82,7 +83,6 @@ class _MattersDayDatailPageState extends State<MattersDayDatailPage> {
       await savedFile.create(recursive: true);
     }
     await pickedImage.saveTo(savePath);
-    _updateImage(File(savePath));
   }
 
   @override
