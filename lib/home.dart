@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'models/module_meta.dart';
+import 'utils/context.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -8,9 +9,7 @@ class HomePage extends StatelessWidget {
   Widget _buildModuleCard(BuildContext context, ModuleMeta meta) {
     return GestureDetector(
       key: ValueKey(meta.id),
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => meta.entryPage),
-      ),
+      onTap: () => context.pushPage(builder: (context) => meta.entryPage),
       child: Card(
         child: Column(
           children: [

@@ -22,13 +22,13 @@ class MattersDayItem extends StatelessWidget {
           CupertinoActionSheetAction(
             onPressed: () {
               daySnapshot.reference.delete();
-              Navigator.of(context).pop();
+              context.popPage();
             },
             isDestructiveAction: true,
             child: const Text('删除'),
           ),
           CupertinoActionSheetAction(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.popPage(),
             child: const Text('取消'),
           ),
         ],
@@ -44,12 +44,10 @@ class MattersDayItem extends StatelessWidget {
       actions: [
         CupertinoContextMenuAction(
           onPressed: () {
-            Navigator.of(context).pop();
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => MattersDayModifyPage(
-                  dayRef: daySnapshot.reference,
-                ),
+            context.popPage();
+            context.pushPage(
+              builder: (context) => MattersDayModifyPage(
+                dayRef: daySnapshot.reference,
               ),
             );
           },
@@ -58,7 +56,7 @@ class MattersDayItem extends StatelessWidget {
         ),
         CupertinoContextMenuAction(
           onPressed: () {
-            Navigator.of(context).pop();
+            context.popPage();
             _showDeletePopup(context);
           },
           isDestructiveAction: true,
@@ -73,11 +71,8 @@ class MattersDayItem extends StatelessWidget {
         );
       },
       child: GestureDetector(
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) =>
-                MattersDayDatailPage(daySnapshot: daySnapshot),
-          ),
+        onTap: () => context.pushPage(
+          builder: (context) => MattersDayDatailPage(daySnapshot: daySnapshot),
         ),
         child: Card(
           child: Container(

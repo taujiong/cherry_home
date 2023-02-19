@@ -31,11 +31,9 @@ class _MattersDayDatailPageState extends State<MattersDayDatailPage> {
   }
 
   void _editDay() async {
-    final updatedDay = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) =>
-            MattersDayModifyPage(dayRef: widget.daySnapshot.reference),
-      ),
+    final updatedDay = await context.pushPage<MattersDay>(
+      builder: (context) =>
+          MattersDayModifyPage(dayRef: widget.daySnapshot.reference),
     );
     if (updatedDay == null) return;
     setState(() {

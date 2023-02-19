@@ -1,3 +1,4 @@
+import 'package:cherry_home/utils/context.dart';
 import 'package:flutter/material.dart';
 
 import '../models/matters_day.dart';
@@ -18,13 +19,9 @@ class MattersDayListPage extends StatelessWidget {
         scrolledUnderElevation: 4,
         actions: [
           IconButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const MattersDayModifyPage(),
-                ),
-              );
-            },
+            onPressed: () => context.pushPage(
+              builder: (context) => const MattersDayModifyPage(),
+            ),
             icon: const Icon(Icons.add),
           ),
         ],
