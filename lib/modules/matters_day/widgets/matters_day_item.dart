@@ -101,32 +101,28 @@ class MattersDayItem extends StatelessWidget {
                       width: 64,
                       margin: const EdgeInsets.only(left: 8),
                       alignment: Alignment.center,
-                      color: Colors.orange,
+                      color: Theme.of(context).colorScheme.primary,
                       child: Text(
                         '${day.leftDaysFromNow.abs()}',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge!
-                            .copyWith(color: Colors.white),
+                        style: Theme.of(context).primaryTextTheme.bodyLarge,
                       ),
                     ),
                     Container(
                       height: double.infinity,
                       width: 32,
+                      alignment: Alignment.center,
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.only(
                           topRight: Radius.circular(12),
                           bottomRight: Radius.circular(12),
                         ),
-                        color: Colors.orange[700],
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
-                      alignment: Alignment.center,
                       child: Text(
                         '天',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge!
-                            .copyWith(color: Colors.white),
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              color: Theme.of(context).colorScheme.onSecondary,
+                            ),
                       ),
                     )
                   ],

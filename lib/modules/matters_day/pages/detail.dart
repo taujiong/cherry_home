@@ -1,9 +1,9 @@
-import 'package:cherry_home/modules/matters_day/models/matters_day.dart';
-import 'package:cherry_home/modules/matters_day/pages/modify.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../models/matters_day.dart';
 import '../widgets/matters_day_card.dart';
+import 'modify.dart';
 
 class MattersDayDatailPage extends StatelessWidget {
   final QueryDocumentSnapshot<MattersDay> daySnapshot;
@@ -45,7 +45,25 @@ class MattersDayDatailPage extends StatelessWidget {
               right: 24,
             ),
             child: Column(
-              children: [MattersDayCard(height: maxHeight * 0.36, day: day)],
+              children: [
+                MattersDayCard(height: maxHeight * 0.36, day: day),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    FilledButton.icon(
+                      onPressed: () {},
+                      icon: const Icon(Icons.image),
+                      label: const Text('设置背景'),
+                    ),
+                    FilledButton.icon(
+                      onPressed: () {},
+                      icon: const Icon(Icons.share),
+                      label: const Text('分享图片'),
+                    ),
+                  ],
+                )
+              ],
             ),
           );
         },

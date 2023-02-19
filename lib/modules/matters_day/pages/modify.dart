@@ -46,7 +46,7 @@ class _MattersDayModifyPageState extends State<MattersDayModifyPage> {
   void _saveDay() {
     if (!_formKey.currentState!.validate()) return;
     _day.description = _description.text;
-    _dayRef.set(_day).then((value) => Navigator.of(context).pop());
+    _dayRef.set(_day).then((value) => Navigator.of(context).pop(_day));
   }
 
   void _onDateFieldTapped() async {

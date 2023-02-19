@@ -25,26 +25,22 @@ class MattersDayCard extends StatelessWidget {
               height: 48,
               width: double.infinity,
               alignment: Alignment.center,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(12),
                   topRight: Radius.circular(12),
                 ),
-                color: Colors.blue,
+                color: Theme.of(context).colorScheme.primary,
               ),
               child: Text(
-                day.description,
-                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      color: Colors.white,
-                    ),
+                "${day.description}${day.isExpired ? '已经' : '还有'}",
+                style: Theme.of(context).primaryTextTheme.bodyLarge,
               ),
             ),
             Expanded(
-              child: Container(
-                alignment: Alignment.center,
-                color: Theme.of(context).colorScheme.background,
+              child: Center(
                 child: Text(
-                  day.leftDaysFromNow.toString(),
+                  day.leftDaysFromNow.abs().toString(),
                   style: Theme.of(context).textTheme.displayLarge!.copyWith(
                         fontWeight: FontWeight.w800,
                         fontSize: 96,
@@ -55,15 +51,19 @@ class MattersDayCard extends StatelessWidget {
             Container(
               height: 48,
               alignment: Alignment.center,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(12),
                   bottomRight: Radius.circular(12),
                 ),
+                color: Theme.of(context).colorScheme.surfaceVariant,
               ),
               child: Text(
-                "目标日：${DateFormat('yyyy-MM-dd E', 'zh').format(day.targetDate)}",
-                style: TextStyle(color: Colors.grey.shade700),
+                "${day.isExpired ? '起始日' : '目标日'}："
+                "${DateFormat('yyyy-MM-dd E', 'zh').format(day.targetDate)}",
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
             )
           ],
