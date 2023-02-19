@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../utils/context.dart';
 import '../models/matters_day.dart';
 
 class MattersDayModifyPage extends StatefulWidget {
@@ -74,7 +75,7 @@ class _MattersDayModifyPageState extends State<MattersDayModifyPage> {
               onPressed: _saveDay,
               child: Text(
                 '保存',
-                style: Theme.of(context).textTheme.bodyLarge!,
+                style: context.getTextTheme().bodyLarge!,
               ),
             ),
         ],

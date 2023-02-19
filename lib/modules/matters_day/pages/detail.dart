@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:palette_generator/palette_generator.dart';
 
+import '../../../utils/context.dart';
 import '../models/matters_day.dart';
 import '../widgets/matters_day_card.dart';
 import 'modify.dart';
@@ -17,6 +21,8 @@ class MattersDayDatailPage extends StatefulWidget {
 
 class _MattersDayDatailPageState extends State<MattersDayDatailPage> {
   late MattersDay _day;
+  ImageProvider? _image;
+  Color? _textColor;
 
   @override
   void initState() {
@@ -42,7 +48,16 @@ class _MattersDayDatailPageState extends State<MattersDayDatailPage> {
       source: ImageSource.gallery,
     );
     if (imageFile == null) return;
-    print(imageFile.path);
+
+    final image = Image.file(File(imageFile.path)).image;
+    final palette = await PaletteGenerator.fromImageProvider(image);
+    final mainColor = palette.dominantColor ?? palette.paletteColors[0];
+    final brightness = ThemeData.estimateBrightnessForColor(mainColor.color);
+
+    setState(() {
+      _image = image;
+      _textColor = brightness == Brightness.dark ? Colors.white : Colors.black;
+    });
   }
 
   @override
@@ -57,7 +72,7 @@ class _MattersDayDatailPageState extends State<MattersDayDatailPage> {
             onPressed: _editDay,
             child: Text(
               '编辑',
-              style: Theme.of(context).textTheme.bodyLarge!,
+              style: context.getTextTheme().bodyLarge!,
             ),
           ),
         ],
@@ -74,7 +89,12 @@ class _MattersDayDatailPageState extends State<MattersDayDatailPage> {
             ),
             child: Column(
               children: [
-                MattersDayCard(height: maxHeight * 0.36, day: _day),
+                MattersDayCard(
+                  height: maxHeight * 0.36,
+                  day: _day,
+                  image: _image,
+                  textColor: _textColor,
+                ),
                 const SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

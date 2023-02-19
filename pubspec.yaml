@@ -16,6 +16,7 @@ dependencies:
   firebase_core: ^2.6.1
   cloud_firestore: ^4.4.2
   image_picker: ^0.8.6+2
+  palette_generator: ^0.3.3+2
 
 dev_dependencies:
   flutter_test:

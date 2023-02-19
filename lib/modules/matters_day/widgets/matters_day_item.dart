@@ -1,11 +1,12 @@
-import 'package:cherry_home/modules/matters_day/pages/detail.dart';
-import 'package:cherry_home/modules/matters_day/widgets/matters_day_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../../utils/context.dart';
 import '../models/matters_day.dart';
+import '../pages/detail.dart';
 import '../pages/modify.dart';
+import 'matters_day_card.dart';
 
 class MattersDayItem extends StatelessWidget {
   final QueryDocumentSnapshot<MattersDay> daySnapshot;
@@ -101,7 +102,7 @@ class MattersDayItem extends StatelessWidget {
                       width: 64,
                       margin: const EdgeInsets.only(left: 8),
                       alignment: Alignment.center,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: context.getColorScheme().primary,
                       child: Text(
                         '${day.leftDaysFromNow.abs()}',
                         style: Theme.of(context).primaryTextTheme.bodyLarge,
@@ -116,12 +117,12 @@ class MattersDayItem extends StatelessWidget {
                           topRight: Radius.circular(12),
                           bottomRight: Radius.circular(12),
                         ),
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: context.getColorScheme().secondary,
                       ),
                       child: Text(
                         '天',
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              color: Theme.of(context).colorScheme.onSecondary,
+                        style: context.getTextTheme().bodyLarge!.copyWith(
+                              color: context.getColorScheme().onSecondary,
                             ),
                       ),
                     )

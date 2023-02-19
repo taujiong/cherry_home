@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../utils/context.dart';
+
 class CounterPage extends StatefulWidget {
   const CounterPage({super.key});
 
@@ -31,7 +33,7 @@ class _CounterPageState extends State<CounterPage> {
             ),
             Text(
               '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+              style: context.getTextTheme().headlineMedium,
             ),
           ],
         ),
