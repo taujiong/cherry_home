@@ -20,13 +20,12 @@ class MattersDayDatailPage extends StatefulWidget {
 }
 
 class _MattersDayDatailPageState extends State<MattersDayDatailPage> {
-  late MattersDay _day;
+  bool _forceUpdateColor = false;
   late Future<ImageProvider?> _image;
 
   @override
   void initState() {
     super.initState();
-    _day = widget.daySnapshot.data();
     _image = MattersDay.tryLoadBackgroundImage(widget.daySnapshot.id);
   }
 
@@ -36,9 +35,7 @@ class _MattersDayDatailPageState extends State<MattersDayDatailPage> {
           MattersDayModifyPage(dayRef: widget.daySnapshot.reference),
     );
     if (updatedDay == null) return;
-    setState(() {
-      _day = updatedDay;
-    });
+    setState(() {});
   }
 
   void _saveImageToLocal(String id, XFile pickedImage) async {
@@ -62,6 +59,7 @@ class _MattersDayDatailPageState extends State<MattersDayDatailPage> {
     _saveImageToLocal(widget.daySnapshot.id, pickedImage);
     setState(() {
       _image = Future.value(Image.file(File(pickedImage.path)).image);
+      _forceUpdateColor = true;
     });
   }
 
@@ -96,8 +94,9 @@ class _MattersDayDatailPageState extends State<MattersDayDatailPage> {
               children: [
                 MattersDayCard(
                   height: maxHeight * 0.36,
-                  day: _day,
+                  daySnapshot: widget.daySnapshot,
                   delayedImage: _image,
+                  forceUpdateColor: _forceUpdateColor,
                 ),
                 const SizedBox(height: 12),
                 Row(

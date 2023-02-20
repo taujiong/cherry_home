@@ -69,7 +69,7 @@ class MattersDayItem extends StatelessWidget {
         return SingleChildScrollView(
           child: MattersDayCard(
             height: 280,
-            day: day,
+            daySnapshot: daySnapshot,
             delayedImage: MattersDay.tryLoadBackgroundImage(daySnapshot.id),
           ),
         );

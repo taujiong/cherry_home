@@ -53,10 +53,14 @@ Future<Color?> getMainColorFromImage(ImageProvider imageProvider) async {
   return Isolate.run(() => _getMainColor(imageData!, width, height));
 }
 
+const defaultColorOpacity = 0.6;
+
 Future<Color> getTextColorOnImage(ImageProvider imageProvider) async {
   final mainColor = await getMainColorFromImage(imageProvider);
-  if (mainColor == null) return Colors.white;
+  if (mainColor == null) return Colors.white.withOpacity(defaultColorOpacity);
 
   final brightness = ThemeData.estimateBrightnessForColor(mainColor);
-  return brightness == Brightness.dark ? Colors.white : Colors.black;
+  return brightness == Brightness.dark
+      ? Colors.white.withOpacity(defaultColorOpacity)
+      : Colors.black.withOpacity(defaultColorOpacity);
 }

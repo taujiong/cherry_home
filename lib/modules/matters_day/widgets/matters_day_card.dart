@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -12,23 +13,31 @@ class _ImageInfo {
   _ImageInfo({required this.image, required this.textColor});
 }
 
+final colorMap = <String, Color>{};
+
 class MattersDayCard extends StatelessWidget {
   final double height;
-  final MattersDay day;
+  final QueryDocumentSnapshot<MattersDay> daySnapshot;
   final Future<ImageProvider?> delayedImage;
+  final bool forceUpdateColor;
 
   const MattersDayCard({
     super.key,
     required this.height,
-    required this.day,
+    required this.daySnapshot,
     required this.delayedImage,
+    this.forceUpdateColor = false,
   });
 
   Future<_ImageInfo?> _loadImageAndColor() async {
     final loadedImage = await delayedImage;
     if (loadedImage == null) return null;
 
-    final color = await getTextColorOnImage(loadedImage);
+    var color = colorMap[daySnapshot.id];
+    if (color == null || forceUpdateColor) {
+      color = await getTextColorOnImage(loadedImage);
+      colorMap[daySnapshot.id] = color;
+    }
     return _ImageInfo(image: loadedImage, textColor: color);
   }
 
@@ -38,6 +47,7 @@ class MattersDayCard extends StatelessWidget {
     Color? textColor,
   ) {
     final hasBackground = image != null;
+    final day = daySnapshot.data();
 
     return Container(
       decoration: hasBackground
@@ -127,8 +137,8 @@ class MattersDayCard extends StatelessWidget {
               return Text(snapshot.error.toString());
             }
 
-            final data = snapshot.data!;
-            return _buildRealCard(context, data.image, data.textColor);
+            final data = snapshot.data;
+            return _buildRealCard(context, data?.image, data?.textColor);
           },
         ),
       ),
