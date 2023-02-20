@@ -67,7 +67,11 @@ class MattersDayItem extends StatelessWidget {
       // ignore: deprecated_member_use
       previewBuilder: (context, animation, child) {
         return SingleChildScrollView(
-          child: MattersDayCard(height: 280, day: day),
+          child: MattersDayCard(
+            height: 280,
+            day: day,
+            delayedImage: MattersDay.tryLoadBackgroundImage(daySnapshot.id),
+          ),
         );
       },
       child: GestureDetector(

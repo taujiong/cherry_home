@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:isolate';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/material.dart' hide Image;
@@ -16,17 +18,13 @@ Future<Image> resolveFromImageProvider(ImageProvider image) {
   return imageCompleter.future;
 }
 
-Future<Color> getTextColorOnImage(ImageProvider imageProvider) async {
-  final image = await resolveFromImageProvider(imageProvider);
-  final imageData = await image.toByteData();
-  final width = image.width, height = image.height;
+Color? _getMainColor(ByteData imageData, int width, int height) {
   final int rowStride = width * 4;
   final colorMap = <Color, int>{};
-
   for (int row = 0; row < height; ++row) {
     for (int col = 0; col < width; ++col) {
       final int position = row * rowStride + col * 4;
-      final int pixel = imageData!.getUint32(position);
+      final int pixel = imageData.getUint32(position);
       final color = Color((pixel << 24) | (pixel >> 8));
       if (colorMap[color] == null) {
         colorMap[color] = 1;
@@ -44,7 +42,19 @@ Future<Color> getTextColorOnImage(ImageProvider imageProvider) async {
       count = entry.value;
     }
   }
+  return mainColor;
+}
 
+Future<Color?> getMainColorFromImage(ImageProvider imageProvider) async {
+  final image = await resolveFromImageProvider(imageProvider);
+  final imageData = await image.toByteData();
+  final width = image.width, height = image.height;
+
+  return Isolate.run(() => _getMainColor(imageData!, width, height));
+}
+
+Future<Color> getTextColorOnImage(ImageProvider imageProvider) async {
+  final mainColor = await getMainColorFromImage(imageProvider);
   if (mainColor == null) return Colors.white;
 
   final brightness = ThemeData.estimateBrightnessForColor(mainColor);

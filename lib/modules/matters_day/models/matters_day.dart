@@ -1,4 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
+
+import '../../../utils/io.dart';
 
 class MattersDay {
   static const groupName = 'matters_day';
@@ -10,6 +15,19 @@ class MattersDay {
                 MattersDay.fromJson(snapshot.data()!),
             toFirestore: (day, options) => day.toJson(),
           );
+
+  static Future<ImageProvider?> tryLoadBackgroundImage(String id) async {
+    final savePath = await getLocalFilePath(
+      MattersDay.groupName,
+      MattersDay.backgroundImageDir,
+      id,
+    );
+    final localImage = File(savePath);
+    final exist = await localImage.exists();
+    if (!exist) return null;
+
+    return Image.file(localImage).image;
+  }
 
   String description;
   DateTime targetDate;

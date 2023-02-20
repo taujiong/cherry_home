@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../utils/context.dart';
-import '../../../utils/image.dart';
 import '../../../utils/io.dart';
 import '../models/matters_day.dart';
 import '../widgets/matters_day_card.dart';
@@ -22,14 +21,13 @@ class MattersDayDatailPage extends StatefulWidget {
 
 class _MattersDayDatailPageState extends State<MattersDayDatailPage> {
   late MattersDay _day;
-  ImageProvider? _image;
-  Color? _textColor;
+  late Future<ImageProvider?> _image;
 
   @override
   void initState() {
     super.initState();
     _day = widget.daySnapshot.data();
-    _loadLocalImage();
+    _image = MattersDay.tryLoadBackgroundImage(widget.daySnapshot.id);
   }
 
   void _editDay() async {
@@ -43,39 +41,11 @@ class _MattersDayDatailPageState extends State<MattersDayDatailPage> {
     });
   }
 
-  void _loadLocalImage() async {
+  void _saveImageToLocal(String id, XFile pickedImage) async {
     final savePath = await getLocalFilePath(
       MattersDay.groupName,
       MattersDay.backgroundImageDir,
-      widget.daySnapshot.id,
-    );
-    final localImage = File(savePath);
-    final exist = await localImage.exists();
-    if (!exist) return;
-    _updateImage(localImage);
-  }
-
-  void _updateImage(File loadedImage) async {
-    final image = Image.file(loadedImage).image;
-    final textColor = await getTextColorOnImage(image);
-
-    setState(() {
-      _image = image;
-      _textColor = textColor;
-    });
-  }
-
-  void _setBackground() async {
-    final pickedImage = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-    );
-    if (pickedImage == null) return;
-
-    _updateImage(File(pickedImage.path));
-    final savePath = await getLocalFilePath(
-      MattersDay.groupName,
-      MattersDay.backgroundImageDir,
-      widget.daySnapshot.id,
+      id,
     );
     final savedFile = File(savePath);
     final exist = await savedFile.exists();
@@ -83,6 +53,16 @@ class _MattersDayDatailPageState extends State<MattersDayDatailPage> {
       await savedFile.create(recursive: true);
     }
     await pickedImage.saveTo(savePath);
+  }
+
+  void _setBackground() async {
+    final pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedImage == null) return null;
+    _saveImageToLocal(widget.daySnapshot.id, pickedImage);
+    setState(() {
+      _image = Future.value(Image.file(File(pickedImage.path)).image);
+    });
   }
 
   @override
@@ -117,8 +97,7 @@ class _MattersDayDatailPageState extends State<MattersDayDatailPage> {
                 MattersDayCard(
                   height: maxHeight * 0.36,
                   day: _day,
-                  image: _image,
-                  textColor: _textColor,
+                  delayedImage: _image,
                 ),
                 const SizedBox(height: 12),
                 Row(
